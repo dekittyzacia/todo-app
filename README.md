@@ -1,4 +1,4 @@
-# VERSEL https://todo-app-git-master-dekittyzacia.vercel.app/
+# VERCEL https://todo-app-git-master-dekittyzacia.vercel.app/
 
 # Getting Started with Create React App
 
