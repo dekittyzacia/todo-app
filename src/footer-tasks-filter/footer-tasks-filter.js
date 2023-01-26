@@ -1,23 +1,22 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const FooterTaskFilter = ({ label, onChangeFilter}) => {
-
-   return (
-      <li>
-         <button onClick={onChangeFilter}>{label}</button>
-      </li>
-   )
+const FooterTaskFilter = ({ label, onChangeFilter }) => {
+  return (
+    <li>
+      <button onClick={onChangeFilter}>{label}</button>
+    </li>
+  )
 }
 
 FooterTaskFilter.defaultProps = {
-   label: 'Filter',
-   onChangeFilter: () => {}
+  label: 'Filter',
+  onChangeFilter: () => {},
 }
 
 FooterTaskFilter.propTypes = {
-   label: PropTypes.string,
-   onChangeFilter: PropTypes.func
+  label: PropTypes.string,
+  onChangeFilter: PropTypes.func,
 }
 
-export default FooterTaskFilter;
+export default FooterTaskFilter

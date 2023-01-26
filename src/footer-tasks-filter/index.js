@@ -1,3 +1,3 @@
-import FooterTaskFilter from "./footer-tasks-filter";
+import FooterTaskFilter from './footer-tasks-filter'
 
-export default FooterTaskFilter;
+export default FooterTaskFilter
