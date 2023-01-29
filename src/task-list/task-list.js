@@ -37,7 +37,7 @@ TaskList.propTypes = {
     PropTypes.shape({
       createTime: PropTypes.string,
       done: PropTypes.bool,
-      id: PropTypes.number,
+      id: PropTypes.string,
       label: PropTypes.string,
     })
   ),

@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import TaskList from '../task-list'
 import NewTaskForm from '../new-task-form'
 import Footer from '../footer'
 
 export default class App extends Component {
-  maxId = 10
-
   state = {
     todoData: [],
 
@@ -32,7 +31,7 @@ export default class App extends Component {
       label,
       createTime: new Date().toJSON(),
       done: false,
-      id: this.maxId++,
+      id: uuidv4(),
     }
   }
 

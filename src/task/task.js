@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 export default class Task extends Component {
   static defaultProps = {
@@ -16,7 +17,7 @@ export default class Task extends Component {
   static propTypes = {
     createTime: PropTypes.string,
     done: PropTypes.bool,
-    id: PropTypes.number,
+    id: PropTypes.string,
     label: PropTypes.string,
     editItem: PropTypes.func,
     onDeleted: PropTypes.func,
@@ -55,18 +56,14 @@ export default class Task extends Component {
   render() {
     const { label, createTime, onDeleted, done, onToggleDone } = this.props
 
-    let classNames
-
-    if (done) {
-      classNames = 'completed'
-    }
-
-    if (this.state.editing) {
-      classNames = 'editing'
-    }
+    //prettier-ignore
+    let taskClasses = classNames({
+      'completed': done,
+      'editing': this.state.editing,
+    })
 
     return (
-      <li className={classNames}>
+      <li className={taskClasses}>
         <div className="view">
           <input className="toggle" type="checkbox" onChange={onToggleDone} defaultChecked={done}></input>
           <label>
