@@ -8,25 +8,37 @@ export default class App extends Component {
   maxId = 10
 
   state = {
-    todoData: [this.createTask('First task'), this.createTask('Second task'), this.createTask('Third task')],
+    todoData: [],
 
     currentFilter: 'all',
+  }
+
+  componentDidMount() {
+    if (localStorage.getItem('data')) {
+      this.setState(() => {
+        return {
+          todoData: JSON.parse(localStorage.getItem('data')),
+        }
+      })
+    }
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('data', JSON.stringify(this.state.todoData))
   }
 
   createTask(label) {
     return {
       label,
-      createTime: new Date(),
+      createTime: new Date().toJSON(),
       done: false,
       id: this.maxId++,
     }
   }
 
   deleteItem = (id) => {
-    this.setState((state) => {
-      const i = state.todoData.findIndex((el) => el.id === id)
-
-      const newData = [...state.todoData.slice(0, i), ...state.todoData.slice(i + 1)]
+    this.setState(({ todoData }) => {
+      const newData = todoData.filter((el) => el.id !== id)
 
       return {
         todoData: newData,
@@ -35,18 +47,19 @@ export default class App extends Component {
   }
 
   toggleProperty(arr, id, propName) {
-    const index = arr.findIndex((el) => el.id === id)
-    const oldItem = arr[index]
-    const newItem = { ...oldItem, [propName]: !oldItem[propName] }
-
-    return [...arr.slice(0, index), newItem, ...arr.slice(index + 1)]
+    return arr.map((item) => {
+      if (item.id === id) {
+        return { ...item, [propName]: !item[propName] }
+      }
+      return item
+    })
   }
 
   addItem = (text) => {
-    const newItem = this.createTask(text)
-
-    this.setState((state) => {
-      const newState = [newItem, ...state.todoData]
+    this.setState(({ todoData }) => {
+      const newState = [...todoData]
+      const newItem = this.createTask(text)
+      newState.unshift(newItem)
       return {
         todoData: newState,
       }
@@ -77,16 +90,22 @@ export default class App extends Component {
   }
 
   filterTasks = (items, filter) => {
+    const filters = {
+      all: 'all',
+      active: 'active',
+      completed: 'completed',
+    }
+
     switch (filter) {
-      case 'all': {
+      case filters.all: {
         return items
       }
 
-      case 'active': {
+      case filters.active: {
         return items.filter((item) => !item.done)
       }
 
-      case 'completed': {
+      case filters.completed: {
         return items.filter((item) => item.done)
       }
 
@@ -98,17 +117,20 @@ export default class App extends Component {
 
   editItem = (id, text) => {
     this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const currentItem = todoData.filter((el) => el.id === id)[0]
-      currentItem.label = text
-
-      return [...todoData.slice(0, index), currentItem, ...todoData.slice(index + 1)]
+      return {
+        todoData: todoData.map((item) => {
+          if (item.id === id) {
+            return { ...item, label: text }
+          }
+          return item
+        }),
+      }
     })
   }
 
   render() {
     const { todoData, currentFilter } = this.state
-    const leftTodo = todoData.filter((el) => !el.done).length
+    const activeItemsLeft = todoData.filter((el) => !el.done).length
 
     const renderingItems = this.filterTasks(todoData, currentFilter)
 
@@ -122,7 +144,11 @@ export default class App extends Component {
             onToggleDone={this.onToggleDone}
             editItem={this.editItem}
           />
-          <Footer itemsLeft={leftTodo} onClearCompleted={this.clearCompleted} onChangeFilter={this.onChangeFilter} />
+          <Footer
+            activeItemsLeft={activeItemsLeft}
+            onClearCompleted={this.clearCompleted}
+            onChangeFilter={this.onChangeFilter}
+          />
         </section>
       </section>
     )

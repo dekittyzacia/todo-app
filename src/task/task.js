@@ -14,7 +14,7 @@ export default class Task extends Component {
   }
 
   static propTypes = {
-    createTime: PropTypes.object,
+    createTime: PropTypes.string,
     done: PropTypes.bool,
     id: PropTypes.number,
     label: PropTypes.string,
@@ -31,6 +31,7 @@ export default class Task extends Component {
   toggleEditing = () => {
     this.setState({
       editing: !this.state.editing,
+      inputValue: this.props.label,
     })
   }
 
@@ -70,7 +71,7 @@ export default class Task extends Component {
           <input className="toggle" type="checkbox" onChange={onToggleDone} defaultChecked={done}></input>
           <label>
             <span className="description">{label}</span>
-            <span className="created date">{`created ${formatDistanceToNow(createTime, {
+            <span className="created date">{`created ${formatDistanceToNow(Date.parse(createTime), {
               includeSeconds: true,
             })} ago`}</span>
           </label>
@@ -81,7 +82,6 @@ export default class Task extends Component {
           <input
             type="text"
             className="edit"
-            placeholder={`Old name is ${label}. New is...`}
             onChange={this.onChangeInputValue}
             autoFocus
             value={this.state.inputValue}

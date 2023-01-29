@@ -22,10 +22,12 @@ export default class NewTaskForm extends Component {
 
   onInputSubmit = (e) => {
     e.preventDefault()
-    this.props.onItemAdded(this.state.label)
-    this.setState({
-      label: '',
-    })
+    if (this.state.label.trim() !== '') {
+      this.props.onItemAdded(this.state.label)
+      this.setState({
+        label: '',
+      })
+    }
   }
 
   render() {

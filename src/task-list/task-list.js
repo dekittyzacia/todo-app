@@ -35,7 +35,7 @@ TaskList.propTypes = {
   onToggleDone: PropTypes.func,
   todoData: PropTypes.arrayOf(
     PropTypes.shape({
-      createTime: PropTypes.object,
+      createTime: PropTypes.string,
       done: PropTypes.bool,
       id: PropTypes.number,
       label: PropTypes.string,

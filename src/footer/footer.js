@@ -23,7 +23,7 @@ export default class Footer extends Component {
   ]
 
   render() {
-    const { itemsLeft, onClearCompleted, onChangeFilter } = this.props
+    const { activeItemsLeft, onClearCompleted, onChangeFilter } = this.props
 
     const buttons = this.buttonData.map((item) => {
       const { filter, label } = item
@@ -33,7 +33,7 @@ export default class Footer extends Component {
 
     return (
       <footer className="footer">
-        <span className="todo-count">{itemsLeft} items left</span>
+        <span className="todo-count">{activeItemsLeft} items left</span>
         <ul className="filters">{buttons}</ul>
         <button className="clear-completed" onClick={onClearCompleted}>
           Clear completed
