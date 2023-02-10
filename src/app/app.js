@@ -53,6 +53,7 @@ export default class App extends Component {
       return item
     })
   }
+  //test comment
 
   addItem = (text) => {
     this.setState(({ todoData }) => {
