@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import Task from '../task'
 
-const TaskList = ({ todoData, onDeleted, onToggleDone, editItem }) => {
+const TaskList = ({ todoData, onDeleted, onToggleDone, editItem, onTimer }) => {
   const tasks = todoData.map((item) => {
     const { id, ...itemProps } = item
 
@@ -12,6 +12,7 @@ const TaskList = ({ todoData, onDeleted, onToggleDone, editItem }) => {
         {...itemProps}
         onDeleted={() => onDeleted(id)}
         onToggleDone={() => onToggleDone(id)}
+        onTimer={onTimer}
         editItem={editItem}
         id={id}
         key={id}

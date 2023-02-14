@@ -3,12 +3,15 @@ import { formatDistanceToNow } from 'date-fns'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import Timer from '../timer'
+
 export default class Task extends Component {
   static defaultProps = {
     createTime: new Date(),
     done: false,
     id: Math.trunc(Math.random() * 10),
     label: 'task',
+    timer: 0,
     editItem: () => {},
     onDeleted: () => {},
     onToggleDone: () => {},
@@ -54,7 +57,7 @@ export default class Task extends Component {
   }
 
   render() {
-    const { label, createTime, onDeleted, done, onToggleDone } = this.props
+    const { label, createTime, onDeleted, done, onToggleDone, leftTime, id, onTimer } = this.props
 
     //prettier-ignore
     let taskClasses = classNames({
@@ -67,8 +70,9 @@ export default class Task extends Component {
         <div className="view">
           <input className="toggle" type="checkbox" onChange={onToggleDone} defaultChecked={done}></input>
           <label>
-            <span className="description">{label}</span>
-            <span className="created date">{`created ${formatDistanceToNow(Date.parse(createTime), {
+            <span className="title">{label}</span>
+            <Timer leftTime={leftTime} id={id} onTimer={onTimer} done={done} />
+            <span className="description">{`created ${formatDistanceToNow(Date.parse(createTime), {
               includeSeconds: true,
             })} ago`}</span>
           </label>

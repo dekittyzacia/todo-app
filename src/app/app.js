@@ -26,12 +26,13 @@ export default class App extends Component {
     localStorage.setItem('data', JSON.stringify(this.state.todoData))
   }
 
-  createTask(label) {
+  createTask(label, leftTime) {
     return {
       label,
       createTime: new Date().toJSON(),
       done: false,
       id: uuidv4(),
+      leftTime,
     }
   }
 
@@ -53,12 +54,11 @@ export default class App extends Component {
       return item
     })
   }
-  //test comment
 
-  addItem = (text) => {
+  addItem = (text, leftTime) => {
     this.setState(({ todoData }) => {
       const newState = [...todoData]
-      const newItem = this.createTask(text)
+      const newItem = this.createTask(text, leftTime)
       newState.unshift(newItem)
       return {
         todoData: newState,
@@ -128,6 +128,19 @@ export default class App extends Component {
     })
   }
 
+  onTimer = (id, leftTime) => {
+    this.setState(({ todoData }) => {
+      return {
+        todoData: todoData.map((item) => {
+          if (item.id === id) {
+            return { ...item, leftTime: leftTime }
+          }
+          return item
+        }),
+      }
+    })
+  }
+
   render() {
     const { todoData, currentFilter } = this.state
     const activeItemsLeft = todoData.filter((el) => !el.done).length
@@ -136,13 +149,17 @@ export default class App extends Component {
 
     return (
       <section className="todoapp">
-        <NewTaskForm onItemAdded={this.addItem} />
+        <header className="header">
+          <h1>todos</h1>
+          <NewTaskForm onItemAdded={this.addItem} />
+        </header>
         <section className="main">
           <TaskList
             todoData={renderingItems}
             onDeleted={this.deleteItem}
             onToggleDone={this.onToggleDone}
             editItem={this.editItem}
+            onTimer={this.onTimer}
           />
           <Footer
             activeItemsLeft={activeItemsLeft}

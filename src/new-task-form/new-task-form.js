@@ -12,38 +12,64 @@ export default class NewTaskForm extends Component {
 
   state = {
     label: '',
+    timerMin: '',
+    timerSec: '',
   }
 
   onInputChange = (e) => {
     this.setState({
-      label: e.target.value,
+      [e.target.name]: e.target.value,
     })
   }
 
-  onInputSubmit = (e) => {
+  onFormSubmit = (e) => {
     e.preventDefault()
-    if (this.state.label.trim() !== '') {
-      this.props.onItemAdded(this.state.label)
-      this.setState({
-        label: '',
-      })
-    }
+    console.log('submit!')
+    const { label, timerMin, timerSec } = this.state
+
+    //if (label.trim() !== '') return
+
+    const leftTime = +timerMin * 60 + +timerSec
+
+    this.props.onItemAdded(label, leftTime)
+    this.setState({
+      label: '',
+      timerMin: '',
+      timerSec: '',
+    })
   }
 
   render() {
     return (
-      <header className="header">
-        <h1>todos</h1>
-        <form onSubmit={this.onInputSubmit}>
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus
-            onChange={this.onInputChange}
-            value={this.state.label}
-          ></input>
-        </form>
-      </header>
+      <form onSubmit={this.onFormSubmit} className="new-todo-form">
+        <input type="submit" hidden /> {/*пашла нахуй дура */}
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          autoFocus
+          name={'label'}
+          onChange={this.onInputChange}
+          value={this.state.label}
+        ></input>
+        <input
+          className="new-todo-form__timer"
+          placeholder="Min"
+          autoFocus
+          type="number"
+          name={'timerMin'}
+          onChange={this.onInputChange}
+          value={this.state.timerMin}
+        />
+        <input
+          className="new-todo-form__timer"
+          placeholder="Sec"
+          autoFocus
+          type="number"
+          name={'timerSec'}
+          onChange={this.onInputChange}
+          value={this.state.timerSec}
+        ></input>
+      </form>
     )
   }
 }
