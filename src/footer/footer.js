@@ -1,44 +1,42 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import FooterTaskFilter from '../footer-tasks-filter'
 
-export default class Footer extends Component {
-  static defaultProps = {
-    itemsLeft: 0,
-    onChangeFilter: () => {},
-    onClearCompleted: () => {},
-  }
+const buttonData = [
+  { filter: 'all', label: 'All' },
+  { filter: 'active', label: 'Active' },
+  { filter: 'completed', label: 'Completed' },
+]
 
-  static propTypes = {
-    itemsLeft: PropTypes.number,
-    onChangeFilter: PropTypes.func,
-    onClearCompleted: PropTypes.func,
-  }
+const Footer = ({ activeItemsLeft, onClearCompleted, onChangeFilter }) => {
+  const buttons = buttonData.map((item) => {
+    const { filter, label } = item
 
-  buttonData = [
-    { filter: 'all', label: 'All' },
-    { filter: 'active', label: 'Active' },
-    { filter: 'completed', label: 'Completed' },
-  ]
+    return <FooterTaskFilter onChangeFilter={() => onChangeFilter(filter)} key={filter} label={label} />
+  })
 
-  render() {
-    const { activeItemsLeft, onClearCompleted, onChangeFilter } = this.props
+  return (
+    <footer className="footer">
+      <span className="todo-count">{activeItemsLeft} items left</span>
+      <ul className="filters">{buttons}</ul>
+      <button className="clear-completed" onClick={onClearCompleted}>
+        Clear completed
+      </button>
+    </footer>
+  )
+}
 
-    const buttons = this.buttonData.map((item) => {
-      const { filter, label } = item
+export default Footer
 
-      return <FooterTaskFilter onChangeFilter={() => onChangeFilter(filter)} key={filter} label={label} />
-    })
+Footer.propTypes = {
+  itemsLeft: PropTypes.number,
+  onChangeFilter: PropTypes.func,
+  onClearCompleted: PropTypes.func,
+}
 
-    return (
-      <footer className="footer">
-        <span className="todo-count">{activeItemsLeft} items left</span>
-        <ul className="filters">{buttons}</ul>
-        <button className="clear-completed" onClick={onClearCompleted}>
-          Clear completed
-        </button>
-      </footer>
-    )
-  }
+Footer.defaultProps = {
+  itemsLeft: 0,
+  onChangeFilter: () => {},
+  onClearCompleted: () => {},
 }

@@ -1,32 +1,25 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import TaskList from '../task-list'
 import NewTaskForm from '../new-task-form'
 import Footer from '../footer'
 
-export default class App extends Component {
-  state = {
-    todoData: [],
+const App = () => {
+  const [todoData, setTodoData] = useState([])
+  const [currentFilter, setCurrentFilter] = useState('all')
 
-    currentFilter: 'all',
-  }
+  // useEffect(() => {
+  //   if (localStorage.getItem('data')) {
+  //     setTodoData(JSON.parse(localStorage.getItem('data')))
+  //   }
+  // }, [])
 
-  componentDidMount() {
-    if (localStorage.getItem('data')) {
-      this.setState(() => {
-        return {
-          todoData: JSON.parse(localStorage.getItem('data')),
-        }
-      })
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('data', JSON.stringify(todoData))
+  }, [todoData])
 
-  componentDidUpdate() {
-    localStorage.setItem('data', JSON.stringify(this.state.todoData))
-  }
-
-  createTask(label, leftTime) {
+  const createTask = (label, leftTime) => {
     return {
       label,
       createTime: new Date().toJSON(),
@@ -36,17 +29,13 @@ export default class App extends Component {
     }
   }
 
-  deleteItem = (id) => {
-    this.setState(({ todoData }) => {
-      const newData = todoData.filter((el) => el.id !== id)
-
-      return {
-        todoData: newData,
-      }
+  const deleteItem = (id) => {
+    setTodoData((todoData) => {
+      return todoData.filter((el) => el.id !== id)
     })
   }
 
-  toggleProperty(arr, id, propName) {
+  const toggleProperty = (arr, id, propName) => {
     return arr.map((item) => {
       if (item.id === id) {
         return { ...item, [propName]: !item[propName] }
@@ -55,41 +44,30 @@ export default class App extends Component {
     })
   }
 
-  addItem = (text, leftTime) => {
-    this.setState(({ todoData }) => {
+  const addItem = (text, leftTime) => {
+    setTodoData((todoData) => {
       const newState = [...todoData]
-      const newItem = this.createTask(text, leftTime)
+      const newItem = createTask(text, leftTime)
       newState.unshift(newItem)
-      return {
-        todoData: newState,
-      }
+      return newState
     })
   }
 
-  onToggleDone = (id) => {
-    this.setState(({ todoData }) => {
-      return {
-        todoData: this.toggleProperty(todoData, id, 'done'),
-      }
+  const onToggleDone = (id) => {
+    setTodoData((todoData) => {
+      toggleProperty(todoData, id, 'done')
     })
   }
 
-  clearCompleted = () => {
-    const { todoData } = this.state
-    const newArray = todoData.filter((el) => !el.done)
-
-    this.setState({
-      todoData: newArray,
-    })
+  const clearCompleted = () => {
+    setTodoData(todoData.filter((el) => !el.done))
   }
 
-  onChangeFilter = (filter) => {
-    this.setState({
-      currentFilter: filter,
-    })
+  const onChangeFilter = (filter) => {
+    setCurrentFilter(filter)
   }
 
-  filterTasks = (items, filter) => {
+  const filterTasks = (items, filter) => {
     const filters = {
       all: 'all',
       active: 'active',
@@ -115,59 +93,49 @@ export default class App extends Component {
     }
   }
 
-  editItem = (id, text) => {
-    this.setState(({ todoData }) => {
-      return {
-        todoData: todoData.map((item) => {
-          if (item.id === id) {
-            return { ...item, label: text }
-          }
-          return item
-        }),
-      }
+  const editItem = (id, text) => {
+    setTodoData(() => {
+      todoData.map((item) => {
+        if (item.id === id) {
+          return { ...item, label: text }
+        }
+        return item
+      })
     })
   }
 
-  onTimer = (id, leftTime) => {
-    this.setState(({ todoData }) => {
-      return {
-        todoData: todoData.map((item) => {
-          if (item.id === id) {
-            return { ...item, leftTime: leftTime }
-          }
-          return item
-        }),
-      }
+  const onTimer = (id, leftTime) => {
+    setTodoData((todoData) => {
+      return todoData.map((item) => {
+        if (item.id === id) {
+          return { ...item, leftTime: leftTime }
+        }
+        return item
+      })
     })
   }
 
-  render() {
-    const { todoData, currentFilter } = this.state
-    const activeItemsLeft = todoData.filter((el) => !el.done).length
+  const activeItemsLeft = todoData.filter((el) => !el.done).length
+  const renderingItems = filterTasks(todoData, currentFilter)
 
-    const renderingItems = this.filterTasks(todoData, currentFilter)
-
-    return (
-      <section className="todoapp">
-        <header className="header">
-          <h1>todos</h1>
-          <NewTaskForm onItemAdded={this.addItem} />
-        </header>
-        <section className="main">
-          <TaskList
-            todoData={renderingItems}
-            onDeleted={this.deleteItem}
-            onToggleDone={this.onToggleDone}
-            editItem={this.editItem}
-            onTimer={this.onTimer}
-          />
-          <Footer
-            activeItemsLeft={activeItemsLeft}
-            onClearCompleted={this.clearCompleted}
-            onChangeFilter={this.onChangeFilter}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <header className="header">
+        <h1>todos</h1>
+        <NewTaskForm onItemAdded={addItem} />
+      </header>
+      <section className="main">
+        <TaskList
+          onTimer={onTimer}
+          todoData={renderingItems}
+          onDeleted={deleteItem}
+          onToggleDone={onToggleDone}
+          editItem={editItem}
+        />
+        <Footer activeItemsLeft={activeItemsLeft} onClearCompleted={clearCompleted} onChangeFilter={onChangeFilter} />
       </section>
-    )
-  }
+    </section>
+  )
 }
+
+export default App
