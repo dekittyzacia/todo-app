@@ -64,6 +64,7 @@ export default class Task extends Component {
       'completed': done,
       'editing': this.state.editing,
     })
+    //test
 
     return (
       <li className={taskClasses}>
